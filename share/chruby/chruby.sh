@@ -11,6 +11,7 @@ function chruby_reset()
 	[[ -z "$RUBY_ROOT" ]] && return
 
 	PATH=":$PATH:"; PATH="${PATH//:$RUBY_ROOT\/bin:/:}"
+	[[ -n "$CHRUBY_PREPEND_PATH" ]] && PATH="${PATH//:$CHRUBY_PREPEND_PATH:/:}"
 	[[ -n "$GEM_ROOT" ]] && PATH="${PATH//:$GEM_ROOT\/bin:/:}"
 
 	if (( UID != 0 )); then
@@ -55,6 +56,10 @@ EOF
 		export GEM_HOME="$HOME/.gem/$RUBY_ENGINE/$RUBY_VERSION"
 		export GEM_PATH="$GEM_HOME${GEM_ROOT:+:$GEM_ROOT}${GEM_PATH:+:$GEM_PATH}"
 		export PATH="$GEM_HOME/bin:$PATH"
+	fi
+
+	if [[ -n "$CHRUBY_PREPEND_PATH" ]]; then
+		export PATH="$CHRUBY_PREPEND_PATH:$PATH"
 	fi
 
 	hash -r
